@@ -1,0 +1,423 @@
+{
+  "timestamp": "2025-10-03T09:22:54.722Z",
+  "checks": [
+    {
+      "name": "Directory: src",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/components",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/pages",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/store",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/lib",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/types",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/hooks",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: src/test",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: e2e",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "Directory: scripts",
+      "passed": true,
+      "message": "Directory exists",
+      "type": "info"
+    },
+    {
+      "name": "File: package.json",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: vite.config.ts",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: tsconfig.json",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: tailwind.config.js",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: Dockerfile",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: docker-compose.yml",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: nginx.conf",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: DEPLOYMENT.md",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: src/App.tsx",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: src/main.tsx",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "File: src/store/index.ts",
+      "passed": true,
+      "message": "File exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: Layout.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: FileUploader.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: FileList.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: StatisticsCards.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: TimeSeriesChart.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: CategoryChart.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: FilterPanel.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: DataTable.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: ExportButton.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Component: ErrorBoundary.tsx",
+      "passed": true,
+      "message": "Component exists",
+      "type": "info"
+    },
+    {
+      "name": "Page: Dashboard.tsx",
+      "passed": true,
+      "message": "Page exists",
+      "type": "info"
+    },
+    {
+      "name": "Page: FileManager.tsx",
+      "passed": true,
+      "message": "Page exists",
+      "type": "info"
+    },
+    {
+      "name": "Page: Analytics.tsx",
+      "passed": true,
+      "message": "Page exists",
+      "type": "info"
+    },
+    {
+      "name": "Service: csvParser.ts",
+      "passed": true,
+      "message": "Service exists",
+      "type": "info"
+    },
+    {
+      "name": "Service: statisticsService.ts",
+      "passed": true,
+      "message": "Service exists",
+      "type": "info"
+    },
+    {
+      "name": "Service: exportService.ts",
+      "passed": true,
+      "message": "Service exists",
+      "type": "info"
+    },
+    {
+      "name": "Service: filterService.ts",
+      "passed": true,
+      "message": "Service exists",
+      "type": "info"
+    },
+    {
+      "name": "Service: errorService.ts",
+      "passed": true,
+      "message": "Service exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: setup.ts",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: statisticsService.test.ts",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: fullIntegration.test.tsx",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: complete-workflow.spec.ts",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: vitest.config.ts",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Test: playwright.config.ts",
+      "passed": true,
+      "message": "Test file exists",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: react",
+      "passed": true,
+      "message": "Version: ^18.2.0",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: react-dom",
+      "passed": true,
+      "message": "Version: ^18.2.0",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: react-router-dom",
+      "passed": true,
+      "message": "Version: ^6.20.1",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: zustand",
+      "passed": true,
+      "message": "Version: ^4.4.7",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: chart.js",
+      "passed": true,
+      "message": "Version: ^4.4.0",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: react-chartjs-2",
+      "passed": true,
+      "message": "Version: ^5.2.0",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: papaparse",
+      "passed": true,
+      "message": "Version: ^5.4.1",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: tailwindcss",
+      "passed": true,
+      "message": "Version: ^3.3.5",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: jspdf",
+      "passed": true,
+      "message": "Version: ^2.5.1",
+      "type": "info"
+    },
+    {
+      "name": "Dependency: html2canvas",
+      "passed": true,
+      "message": "Version: ^1.4.1",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: @vitejs/plugin-react",
+      "passed": true,
+      "message": "Version: ^4.1.1",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: vite",
+      "passed": true,
+      "message": "Version: ^4.5.0",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: typescript",
+      "passed": true,
+      "message": "Version: ^5.2.2",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: vitest",
+      "passed": true,
+      "message": "Version: ^3.2.4",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: @playwright/test",
+      "passed": true,
+      "message": "Version: ^1.40.0",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: @testing-library/react",
+      "passed": true,
+      "message": "Version: ^16.3.0",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: eslint",
+      "passed": true,
+      "message": "Version: ^8.53.0",
+      "type": "info"
+    },
+    {
+      "name": "Dev Dependency: prettier",
+      "passed": true,
+      "message": "Version: ^3.1.0",
+      "type": "info"
+    },
+    {
+      "name": "TypeScript config",
+      "passed": true,
+      "message": "tsconfig.json exists (parsing skipped due to comments)",
+      "type": "info"
+    },
+    {
+      "name": "Docker file: Dockerfile",
+      "passed": true,
+      "message": "Docker file exists",
+      "type": "info"
+    },
+    {
+      "name": "Docker file: docker-compose.yml",
+      "passed": true,
+      "message": "Docker file exists",
+      "type": "info"
+    },
+    {
+      "name": "Docker file: nginx.conf",
+      "passed": true,
+      "message": "Docker file exists",
+      "type": "info"
+    },
+    {
+      "name": "Vite configuration",
+      "passed": true,
+      "message": "vite.config.ts exists",
+      "type": "info"
+    },
+    {
+      "name": "Tailwind configuration",
+      "passed": true,
+      "message": "tailwind.config.js exists",
+      "type": "info"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "passed": 69,
+  "failed": 0
+}

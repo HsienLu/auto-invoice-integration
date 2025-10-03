@@ -1,0 +1,2 @@
+This is not a CSV file.
+It contains invalid data that should trigger an error.

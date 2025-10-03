@@ -1,0 +1,66 @@
+services:
+  # Development service
+  invoice-dashboard-dev:
+    build:
+      context: .
+      target: development
+    container_name: invoice-dashboard-dev
+    ports:
+      - "3000:3000"    # Development server port
+      - "9229:9229"    # Debug port
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      # Exclude node_modules to avoid conflicts
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # Enable hot reload in Docker
+      - WATCHPACK_POLLING=true    # Additional polling for file changes
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    profiles:
+      - dev
+
+  # Production service with Nginx
+  invoice-dashboard-prod:
+    build:
+      context: .
+      target: production
+    container_name: invoice-dashboard-prod
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    profiles:
+      - production
+
+  # Alternative production service with Node.js
+  invoice-dashboard-prod-node:
+    build:
+      context: .
+      target: production-node
+    container_name: invoice-dashboard-prod-node
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    profiles:
+      - production-node
+
+  # Load balancer for production (optional)
+  nginx-lb:
+    image: nginx:alpine
+    container_name: invoice-dashboard-lb
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx-lb.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - invoice-dashboard-prod-node
+    restart: unless-stopped
+    profiles:
+      - load-balancer
