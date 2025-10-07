@@ -3,6 +3,53 @@ import { persist } from 'zustand/middleware';
 import { Invoice, FileInfo, Statistics } from '@/types';
 import { calculateBasicStatistics, getValidInvoices } from '@/lib/statisticsService';
 
+const ensureDate = (value: Date | string | number): Date => {
+  if (value instanceof Date) {
+    return value;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return new Date();
+  }
+
+  return parsed;
+};
+
+const ensureOptionalDate = (
+  value: Date | string | number | null | undefined
+): Date | undefined => {
+  if (value === null || value === undefined) {
+    return undefined;
+  }
+
+  return ensureDate(value);
+};
+
+const deserializeInvoice = (invoice: Invoice): Invoice => ({
+  ...invoice,
+  invoiceDate: ensureDate(invoice.invoiceDate),
+  items: invoice.items.map(item => ({ ...item })),
+});
+
+const deserializeFile = (file: FileInfo): FileInfo => ({
+  ...file,
+  uploadDate: ensureDate(file.uploadDate),
+  lastProcessedDate: ensureOptionalDate(file.lastProcessedDate ?? undefined),
+});
+
+const deserializeStatistics = (statistics: Statistics): Statistics => ({
+  ...statistics,
+  dateRange: {
+    start: ensureDate(statistics.dateRange.start),
+    end: ensureDate(statistics.dateRange.end),
+  },
+  timeSeriesData: statistics.timeSeriesData.map(point => ({
+    ...point,
+    date: ensureDate(point.date),
+  })),
+});
+
 interface InvoiceStore {
   // State
   invoices: Invoice[];
@@ -37,16 +84,18 @@ export const useInvoiceStore = create<InvoiceStore>()(
 
       // Actions
       setInvoices: (invoices) => {
-        set({ invoices });
+        const normalizedInvoices = invoices.map(deserializeInvoice);
+        set({ invoices: normalizedInvoices });
         // Auto-refresh statistics when invoices change
-        const validInvoices = getValidInvoices(invoices);
+        const validInvoices = getValidInvoices(normalizedInvoices);
         const newStatistics = calculateBasicStatistics(validInvoices);
         set({ statistics: newStatistics });
       },
-      
+
       addInvoices: (newInvoices) => {
         set((state) => {
-          const updatedInvoices = [...state.invoices, ...newInvoices];
+          const normalizedNewInvoices = newInvoices.map(deserializeInvoice);
+          const updatedInvoices = [...state.invoices, ...normalizedNewInvoices];
           const validInvoices = getValidInvoices(updatedInvoices);
           const newStatistics = calculateBasicStatistics(validInvoices);
           return {
@@ -56,11 +105,11 @@ export const useInvoiceStore = create<InvoiceStore>()(
         });
       },
 
-      setFiles: (files) => set({ files }),
-      
+      setFiles: (files) => set({ files: files.map(deserializeFile) }),
+
       addFile: (file) =>
         set((state) => ({
-          files: [...state.files, file],
+          files: [...state.files, deserializeFile(file)],
         })),
 
       removeFile: (fileId) =>
@@ -81,12 +130,31 @@ export const useInvoiceStore = create<InvoiceStore>()(
 
       updateFile: (fileId, updates) =>
         set((state) => ({
-          files: state.files.map((file) =>
-            file.id === fileId ? { ...file, ...updates } : file
-          ),
+          files: state.files.map((file) => {
+            if (file.id !== fileId) {
+              return file;
+            }
+
+            const nextFile = {
+              ...file,
+              ...updates,
+            } as FileInfo;
+
+            if (updates.uploadDate) {
+              nextFile.uploadDate = ensureDate(updates.uploadDate);
+            }
+
+            if (updates.lastProcessedDate) {
+              nextFile.lastProcessedDate = ensureOptionalDate(
+                updates.lastProcessedDate
+              );
+            }
+
+            return nextFile;
+          }),
         })),
 
-      setStatistics: (statistics) => set({ statistics }),
+      setStatistics: (statistics) => set({ statistics: deserializeStatistics(statistics) }),
       
       setLoading: (isLoading) => set({ isLoading }),
       
@@ -115,6 +183,25 @@ export const useInvoiceStore = create<InvoiceStore>()(
         files: state.files,
         statistics: state.statistics,
       }),
+      merge: (persistedState, currentState) => {
+        if (!persistedState) {
+          return currentState;
+        }
+
+        const typedState = persistedState as InvoiceStore;
+
+        return {
+          ...currentState,
+          ...typedState,
+          invoices: (typedState.invoices || currentState.invoices).map(
+            deserializeInvoice
+          ),
+          files: (typedState.files || currentState.files).map(deserializeFile),
+          statistics: typedState.statistics
+            ? deserializeStatistics(typedState.statistics)
+            : null,
+        };
+      },
     }
   )
 );
