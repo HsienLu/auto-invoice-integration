@@ -64,9 +64,9 @@ describe('DataTable', () => {
     expect(screen.getByText('商店名稱')).toBeInTheDocument();
     expect(screen.getByText('品項名稱')).toBeInTheDocument();
     
-    // Check if invoice data is displayed (using getAllByText for duplicates)
-    expect(screen.getAllByText('AB12345678')).toHaveLength(2); // Two items from same invoice
-    expect(screen.getAllByText('7-ELEVEN')).toHaveLength(2); // Same merchant for both items
+    // Check if invoice data is displayed without duplicate rows
+    expect(screen.getByText('AB12345678')).toBeInTheDocument();
+    expect(screen.getByText('7-ELEVEN')).toBeInTheDocument();
     expect(screen.getByText('可樂')).toBeInTheDocument();
     expect(screen.getByText('便當')).toBeInTheDocument();
   });
@@ -135,17 +135,55 @@ describe('DataTable', () => {
     expect(screen.getByText('顯示欄位')).toBeInTheDocument();
   });
 
-  it('should flatten invoice items correctly', () => {
+  it('should group invoice items into a single row per invoice', () => {
     render(<DataTable invoices={mockInvoices} />);
-    
-    // Should show 3 rows total (2 items from first invoice + 1 item from second invoice)
+
+    // Should show 3 rows total (header + 2 invoice rows)
     const rows = screen.getAllByRole('row');
-    // +1 for header row
-    expect(rows).toHaveLength(4);
-    
-    // Check if both items from first invoice are shown
+    expect(rows).toHaveLength(3);
+
+    // Check if both items from first invoice are shown in the same row
     expect(screen.getByText('可樂')).toBeInTheDocument();
     expect(screen.getByText('便當')).toBeInTheDocument();
     expect(screen.getByText('咖啡')).toBeInTheDocument();
+  });
+
+  it('should merge duplicated invoices by invoice number', () => {
+    const duplicatedInvoices: Invoice[] = [
+      {
+        ...mockInvoices[0],
+        id: 'dup-1',
+        items: [
+          {
+            id: 'dup-item-1',
+            invoiceNumber: mockInvoices[0].invoiceNumber,
+            itemName: '茶葉蛋',
+            amount: 15,
+            category: '餐飲',
+          },
+        ],
+      },
+      {
+        ...mockInvoices[0],
+        id: 'dup-2',
+        items: [
+          {
+            id: 'dup-item-2',
+            invoiceNumber: mockInvoices[0].invoiceNumber,
+            itemName: '關東煮',
+            amount: 45,
+            category: '餐飲',
+          },
+        ],
+      },
+    ];
+
+    render(<DataTable invoices={duplicatedInvoices} />);
+
+    const rows = screen.getAllByRole('row');
+    expect(rows).toHaveLength(2);
+
+    expect(screen.getByText('茶葉蛋')).toBeInTheDocument();
+    expect(screen.getByText('關東煮')).toBeInTheDocument();
   });
 });
