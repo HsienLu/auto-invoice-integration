@@ -47,7 +47,7 @@ export interface ColumnDef {
   render?: (value: any, row: TableRow) => React.ReactNode;
 }
 
-// Table row interface (flattened invoice + item data)
+// Table row interface (one row per invoice with aggregated item data)
 export interface TableRow {
   id: string;
   invoiceNumber: string;
@@ -56,9 +56,7 @@ export interface TableRow {
   merchantId: string;
   totalAmount: number;
   status: 'issued' | 'voided';
-  itemName?: string;
-  itemAmount?: number;
-  itemCategory?: string;
+  items: Invoice['items'];
   carrierType: string;
   carrierNumber: string;
 }
@@ -139,27 +137,64 @@ export function DataTable({ invoices, className }: DataTableProps) {
     {
       key: 'itemName',
       label: '品項名稱',
-      sortable: true,
+      sortable: false,
       visible: columnVisibility.itemName,
       width: 'w-48',
+      render: (_value, row) => {
+        if (!row.items.length) {
+          return '-';
+        }
+
+        return (
+          <div className="space-y-1">
+            {row.items.map(item => (
+              <div key={item.id} className="truncate">{item.itemName || '-'}</div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       key: 'itemAmount',
       label: '品項金額',
-      sortable: true,
+      sortable: false,
       visible: columnVisibility.itemAmount,
       width: 'w-24',
-      render: (value: number | undefined) => value ? `$${value.toLocaleString()}` : '-',
+      render: (_value, row) => {
+        if (!row.items.length) {
+          return '-';
+        }
+
+        return (
+          <div className="space-y-1 text-right">
+            {row.items.map(item => (
+              <div key={item.id}>${item.amount.toLocaleString()}</div>
+            ))}
+          </div>
+        );
+      },
     },
     {
       key: 'itemCategory',
       label: '品項分類',
-      sortable: true,
+      sortable: false,
       visible: columnVisibility.itemCategory,
       width: 'w-24',
-      render: (value: string | undefined) => value ? (
-        <Badge variant="outline">{value}</Badge>
-      ) : '-',
+      render: (_value, row) => {
+        if (!row.items.length) {
+          return '-';
+        }
+
+        return (
+          <div className="flex flex-wrap gap-1">
+            {row.items.map(item => (
+              <Badge key={item.id} variant="outline">
+                {item.category || '未分類'}
+              </Badge>
+            ))}
+          </div>
+        );
+      },
     },
     {
       key: 'carrierType',
@@ -184,46 +219,54 @@ export function DataTable({ invoices, className }: DataTableProps) {
     },
   ];
 
-  // Flatten invoices into table rows (one row per item, or one row per invoice if no items)
+  // Map invoices into table rows (one aggregated row per invoice)
   const tableData = useMemo(() => {
-    const rows: TableRow[] = [];
-    
+    const invoiceMap = new Map<string, TableRow>();
+
     invoices.forEach(invoice => {
-      if (invoice.items && invoice.items.length > 0) {
-        // Create one row per item
-        invoice.items.forEach(item => {
-          rows.push({
-            id: `${invoice.id}-${item.id}`,
-            invoiceNumber: invoice.invoiceNumber,
-            invoiceDate: invoice.invoiceDate,
-            merchantName: invoice.merchantName,
-            merchantId: invoice.merchantId,
-            totalAmount: invoice.totalAmount,
-            status: invoice.status,
-            itemName: item.itemName,
-            itemAmount: item.amount,
-            itemCategory: item.category,
-            carrierType: invoice.carrierType,
-            carrierNumber: invoice.carrierNumber,
-          });
+      const key = invoice.invoiceNumber;
+      const existingInvoice = invoiceMap.get(key);
+
+      if (existingInvoice) {
+        const mergedItems = [...existingInvoice.items];
+
+        (invoice.items ?? []).forEach(item => {
+          if (!mergedItems.some(existingItem => existingItem.id === item.id)) {
+            mergedItems.push(item);
+          }
+        });
+
+        invoiceMap.set(key, {
+          ...existingInvoice,
+          invoiceDate:
+            invoice.invoiceDate && invoice.invoiceDate > existingInvoice.invoiceDate
+              ? invoice.invoiceDate
+              : existingInvoice.invoiceDate,
+          totalAmount: invoice.totalAmount ?? existingInvoice.totalAmount,
+          status: invoice.status === 'voided' ? 'voided' : existingInvoice.status,
+          items: mergedItems,
+          merchantName: existingInvoice.merchantName || invoice.merchantName,
+          merchantId: existingInvoice.merchantId || invoice.merchantId,
+          carrierType: existingInvoice.carrierType || invoice.carrierType,
+          carrierNumber: existingInvoice.carrierNumber || invoice.carrierNumber,
         });
       } else {
-        // Create one row for invoice without items
-        rows.push({
-          id: invoice.id,
+        invoiceMap.set(key, {
+          id: invoice.invoiceNumber,
           invoiceNumber: invoice.invoiceNumber,
           invoiceDate: invoice.invoiceDate,
           merchantName: invoice.merchantName,
           merchantId: invoice.merchantId,
           totalAmount: invoice.totalAmount,
           status: invoice.status,
+          items: invoice.items ?? [],
           carrierType: invoice.carrierType,
           carrierNumber: invoice.carrierNumber,
         });
       }
     });
-    
-    return rows;
+
+    return Array.from(invoiceMap.values());
   }, [invoices]);
 
   // Sort data
