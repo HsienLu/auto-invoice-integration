@@ -20,8 +20,6 @@ services:
     stdin_open: true
     tty: true
     restart: unless-stopped
-    profiles:
-      - dev
 
   # Production service with Nginx
   invoice-dashboard-prod:
