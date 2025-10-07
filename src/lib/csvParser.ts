@@ -238,7 +238,8 @@ function parseMLine(row: any[], rowNumber: number): Partial<Invoice> | null {
 
 /**
  * Parse D-line (detail item data)
- * Format: D,發票號碼,品項名稱,小計金額
+ * Format usually follows: D,發票號碼,小計金額,品項名稱
+ * Some exports use the legacy order D,發票號碼,品項名稱,小計金額 – we support both.
  */
 function parseDLine(row: any[], rowNumber: number): InvoiceItem | null {
   try {
@@ -246,10 +247,35 @@ function parseDLine(row: any[], rowNumber: number): InvoiceItem | null {
       throw new Error(`D行資料欄位不足，需要至少4個欄位，實際只有${row.length}個`);
     }
 
-    const [, invoiceNumber, itemName, amountStr] = row;
+    const [, rawInvoiceNumber, thirdValue, fourthValue] = row;
+
+    const invoiceNumber = rawInvoiceNumber?.toString().trim();
+    const third = thirdValue?.toString().trim() ?? '';
+    const fourth = fourthValue?.toString().trim() ?? '';
+
+    const numericPattern = /^-?\d+(?:\.\d+)?$/;
+    const thirdLooksAmount = numericPattern.test(third.replace(/,/g, ''));
+    const fourthLooksAmount = numericPattern.test(fourth.replace(/,/g, ''));
+
+    let itemName = third;
+    let amountStr = fourth;
+
+    if (thirdLooksAmount && !fourthLooksAmount) {
+      // New format: amount comes before item name
+      itemName = fourth;
+      amountStr = third;
+    } else if (!thirdLooksAmount && fourthLooksAmount) {
+      // Legacy format: item name comes before amount
+      itemName = third;
+      amountStr = fourth;
+    } else if (thirdLooksAmount && fourthLooksAmount) {
+      // Both fields look numeric – fall back to assuming original order to keep validation errors meaningful
+      itemName = third;
+      amountStr = fourth;
+    }
 
     // Validate required fields
-    if (!invoiceNumber?.toString().trim()) {
+    if (!invoiceNumber) {
       throw new Error('發票號碼不能為空');
     }
 
