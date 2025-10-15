@@ -177,8 +177,8 @@ describe('exportService', () => {
   });
 
   describe('exportInvoicesToCSV', () => {
-    it('should export invoice summary successfully', () => {
-      const result = exportInvoicesToCSV(mockInvoices, {
+    it('should export invoice summary successfully', async () => {
+      const result = await exportInvoicesToCSV(mockInvoices, {
         selectedFields: ['invoiceNumber', 'merchantName', 'totalAmount'],
         includeItems: false,
         filename: 'test-export.csv'
@@ -188,8 +188,8 @@ describe('exportService', () => {
       expect(result.filename).toBe('test-export.csv');
     });
 
-    it('should export with item details successfully', () => {
-      const result = exportInvoicesToCSV(mockInvoices, {
+    it('should export with item details successfully', async () => {
+      const result = await exportInvoicesToCSV(mockInvoices, {
         selectedFields: ['invoiceNumber', 'merchantName', 'totalAmount'],
         includeItems: true
       });
@@ -198,8 +198,8 @@ describe('exportService', () => {
       expect(result.filename).toBeDefined();
     });
 
-    it('should handle empty field selection', () => {
-      const result = exportInvoicesToCSV(mockInvoices, {
+    it('should handle empty field selection', async () => {
+      const result = await exportInvoicesToCSV(mockInvoices, {
         selectedFields: [],
         includeItems: false
       });
@@ -216,7 +216,7 @@ describe('exportService', () => {
         throw new Error('Parse error');
       });
 
-      const result = exportInvoicesToCSV(mockInvoices, {
+      const result = await exportInvoicesToCSV(mockInvoices, {
         selectedFields: ['invoiceNumber'],
         includeItems: false
       });

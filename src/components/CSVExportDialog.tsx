@@ -119,7 +119,7 @@ export function CSVExportDialog({
         filename: customFilename.trim() || undefined
       };
 
-      const result = exportInvoicesToCSV(invoices, options, progressId);
+      const result = await exportInvoicesToCSV(invoices, options, progressId);
       
       if (result.success) {
         completeExport(progressId, `成功匯出 ${result.filename}`);

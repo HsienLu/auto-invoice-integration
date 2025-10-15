@@ -5,6 +5,7 @@ import { FilterPanel } from '@/components/FilterPanel';
 import { DataTable } from '@/components/DataTable';
 import { AdvancedTimeSeriesChart } from '@/components/AdvancedTimeSeriesChart';
 import { AdvancedCategoryChart } from '@/components/AdvancedCategoryChart';
+import { CSVExportDialog } from '@/components/CSVExportDialog';
 import { useInvoiceStore } from '@/store';
 import { FilterCriteria, FilteredData } from '@/types';
 import { getFilteredData, createEmptyFilters } from '@/lib/filterService';
@@ -23,6 +24,7 @@ const Analytics = memo(function Analytics() {
       timeSeriesData: [],
     },
   });
+  const [showExportDialog, setShowExportDialog] = useState(false);
 
   // Initialize with empty filters
   useEffect(() => {
@@ -43,9 +45,8 @@ const Analytics = memo(function Analytics() {
   }, [invoices]);
 
   const handleExportData = useCallback(() => {
-    // TODO: Implement export functionality in task 9
-    console.log('Export data:', filteredData.invoices);
-  }, [filteredData.invoices]);
+    setShowExportDialog(true);
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
@@ -113,6 +114,14 @@ const Analytics = memo(function Analytics() {
           <DataTable invoices={filteredData.invoices} />
         </div>
       </div>
+
+      {/* Export Dialog */}
+      <CSVExportDialog
+        open={showExportDialog}
+        onOpenChange={setShowExportDialog}
+        invoices={filteredData.invoices}
+        title="匯出篩選後的發票資料"
+      />
     </div>
   );
 });

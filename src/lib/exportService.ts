@@ -85,17 +85,17 @@ export interface ExportOptions {
 /**
  * Export invoices to CSV format
  */
-export function exportInvoicesToCSV(
+export async function exportInvoicesToCSV(
   invoices: Invoice[],
   options: ExportOptions,
   progressId?: string
-): { success: boolean; error?: string; filename?: string } {
+): Promise<{ success: boolean; error?: string; filename?: string }> {
   try {
     const { selectedFields, includeItems, filename } = options;
     
     // Update progress if tracking
     if (progressId) {
-      const { updateExportProgress } = require('./exportProgressService');
+      const { updateExportProgress } = await import('./exportProgressService');
       updateExportProgress(progressId, 'processing', 10, '驗證匯出選項...');
     }
     
@@ -109,7 +109,7 @@ export function exportInvoicesToCSV(
     }
 
     if (progressId) {
-      const { updateExportProgress } = require('./exportProgressService');
+      const { updateExportProgress } = await import('./exportProgressService');
       updateExportProgress(progressId, 'processing', 30, '準備資料...');
     }
 
@@ -124,7 +124,7 @@ export function exportInvoicesToCSV(
     }
 
     if (progressId) {
-      const { updateExportProgress } = require('./exportProgressService');
+      const { updateExportProgress } = await import('./exportProgressService');
       updateExportProgress(progressId, 'generating', 60, '生成 CSV 內容...');
     }
 
@@ -134,7 +134,7 @@ export function exportInvoicesToCSV(
     });
 
     if (progressId) {
-      const { updateExportProgress } = require('./exportProgressService');
+      const { updateExportProgress } = await import('./exportProgressService');
       updateExportProgress(progressId, 'generating', 90, '準備下載...');
     }
 
