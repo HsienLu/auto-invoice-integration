@@ -1,9 +1,9 @@
-
 import { Link } from 'react-router-dom';
 import { Upload } from 'lucide-react';
 import { StatisticsCards } from '@/components/StatisticsCards';
 import { TimeSeriesChart } from '@/components/TimeSeriesChart';
 import { CategoryChart } from '@/components/CategoryChart';
+import AssetDistributionChart from '@/components/AssetDistributionChart';
 import { useInvoiceStore } from '@/store';
 import { memo } from 'react';
 
@@ -30,8 +30,8 @@ const Dashboard = memo(function Dashboard() {
           <p className="text-muted-foreground mb-4">
             請先上傳您的發票CSV檔案來開始分析您的消費數據。
           </p>
-          <Link 
-            to="/files" 
+          <Link
+            to="/files"
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
           >
             <Upload className="h-4 w-4" />
@@ -41,9 +41,10 @@ const Dashboard = memo(function Dashboard() {
       )}
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <TimeSeriesChart />
         <CategoryChart />
+        <AssetDistributionChart />
       </div>
     </div>
   );

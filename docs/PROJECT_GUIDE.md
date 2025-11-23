@@ -25,12 +25,12 @@
 
 ## 2. 使用者旅程與版位
 
-| 旅程階段 | 主要頁面 / 功能 | 契約 | 成功標準 |
-| --- | --- | --- | --- |
-| 1️⃣ 登入 / 瞬時價值 | Dashboard (`src/pages/Dashboard.tsx`) | 立即顯示統計卡與空狀態提示 | 3 秒內呈現 KPI 或引導上傳 |
-| 2️⃣ 上傳與資料信任 | File Manager (`src/pages/FileManager.tsx`) | `FileUploader`, `FileList`, `useFileReprocessing` | 檔案驗證明確，錯誤可重試 |
-| 3️⃣ 深入分析 | Analytics (`src/pages/Analytics.tsx`) | `FilterPanel`, `AdvancedCharts`, `DataTable` | 篩選即時、匯出可控 |
-| 4️⃣ 匯出 / 分享 | `CSVExportDialog`, `PDFExportDialog` | `exportService`, `exportProgressService` | 匯出進度透明、錯誤可重試 |
+| 旅程階段           | 主要頁面 / 功能                            | 契約                                              | 成功標準                  |
+| ------------------ | ------------------------------------------ | ------------------------------------------------- | ------------------------- |
+| 1️⃣ 登入 / 瞬時價值 | Dashboard (`src/pages/Dashboard.tsx`)      | 立即顯示統計卡與空狀態提示                        | 3 秒內呈現 KPI 或引導上傳 |
+| 2️⃣ 上傳與資料信任  | File Manager (`src/pages/FileManager.tsx`) | `FileUploader`, `FileList`, `useFileReprocessing` | 檔案驗證明確，錯誤可重試  |
+| 3️⃣ 深入分析        | Analytics (`src/pages/Analytics.tsx`)      | `FilterPanel`, `AdvancedCharts`, `DataTable`      | 篩選即時、匯出可控        |
+| 4️⃣ 匯出 / 分享     | `CSVExportDialog`, `PDFExportDialog`       | `exportService`, `exportProgressService`          | 匯出進度透明、錯誤可重試  |
 
 ## 3. 系統架構快照
 
@@ -90,13 +90,20 @@ graph TD
 
 ### 4.2 CSV / 檔案管線
 
-| 元件 | 位置 | 功能 |
-| --- | --- | --- |
-| `FileUploader` | `src/components/FileUploader.tsx` | 拖放、多檔、上傳狀態、錯誤提示、進度視窗 (`ParseProgressDialog`) |
-| `csvService` | `src/lib/csvService.ts` | 驗證、解析、更新 store、儲存原檔、重新處理 (`reprocessFile`) |
-| `csvParser` | `src/lib/csvParser.ts` | 實際解析 M/D 行、欄位順序檢測、記憶體優化 |
-| `memoryOptimizer` | `src/lib/memoryOptimizer.ts` | chunk 處理、記憶體監控、資料去重、GC 提示 |
-| `useFileReprocessing` | `src/hooks/useFileReprocessing.ts` | 重新處理 UI 行為與建議訊息 |
+| 元件                  | 位置                               | 功能                                                             |
+| --------------------- | ---------------------------------- | ---------------------------------------------------------------- |
+| `FileUploader`        | `src/components/FileUploader.tsx`  | 拖放、多檔、上傳狀態、錯誤提示、進度視窗 (`ParseProgressDialog`) |
+| `csvService`          | `src/lib/csvService.ts`            | 驗證、解析、更新 store、儲存原檔、重新處理 (`reprocessFile`)     |
+| `csvParser`           | `src/lib/csvParser.ts`             | 實際解析 M/D 行、欄位順序檢測、記憶體優化                        |
+| `memoryOptimizer`     | `src/lib/memoryOptimizer.ts`       | chunk 處理、記憶體監控、資料去重、GC 提示                        |
+| `useFileReprocessing` | `src/hooks/useFileReprocessing.ts` | 重新處理 UI 行為與建議訊息                                       |
+
+### 4.6 個人資產管理 (Personal Assets)
+
+- 位於 `src/pages/PersonalAssets.tsx`，提供個人資產的建立、列表與總額展示。
+- 型別定義新增於 `src/types/index.ts`，使用 `Asset` 型別並包含 `type`, `value`, `currency` 等欄位。
+- 資料存放於現有 `Zustand` store (`src/store/index.ts`)，由 `assets` 欄位與 `setAssets`, `addAsset`, `updateAsset`, `removeAsset` 等方法管理。
+- UI 使用 `Table`、`Dialog`、`Input` 與 `Select` 等組件，可快速擴充匯入/匯出/圖表分析功能。
 
 ### 4.3 分析與圖表
 
@@ -130,15 +137,16 @@ graph TD
 
 ## 6. 測試與品質策略
 
-| 類型 | 工具 / 位置 | 覆蓋重點 |
-| --- | --- | --- |
-| 單元測試 | Vitest (`src/lib/__tests__`, `src/components/__tests__`) | `statisticsService`, `csvParser`, UI 邏輯、錯誤處理 |
-| 整合測試 | Vitest (`src/test/integration`) | 全流程（檔案上傳 → 統計 → 匯出）模擬 |
-| E2E 測試 | Playwright (`e2e/*.spec.ts`) | 真實瀏覽器行為、裝置尺寸 (`responsive-design.spec.ts`)、跨瀏覽器 |
-| 品質整合 | `scripts/run-all-tests.js`, `scripts/verify-integration.js` | 聚合測試、覆蓋率、建置、E2E、結構檢查 |
-| 監控報告 | `build-report.json`, `test-report.json`, `integration-verification.json` | Bundle 大小、測試結果、結構檢查紀錄 |
+| 類型     | 工具 / 位置                                                              | 覆蓋重點                                                         |
+| -------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| 單元測試 | Vitest (`src/lib/__tests__`, `src/components/__tests__`)                 | `statisticsService`, `csvParser`, UI 邏輯、錯誤處理              |
+| 整合測試 | Vitest (`src/test/integration`)                                          | 全流程（檔案上傳 → 統計 → 匯出）模擬                             |
+| E2E 測試 | Playwright (`e2e/*.spec.ts`)                                             | 真實瀏覽器行為、裝置尺寸 (`responsive-design.spec.ts`)、跨瀏覽器 |
+| 品質整合 | `scripts/run-all-tests.js`, `scripts/verify-integration.js`              | 聚合測試、覆蓋率、建置、E2E、結構檢查                            |
+| 監控報告 | `build-report.json`, `test-report.json`, `integration-verification.json` | Bundle 大小、測試結果、結構檢查紀錄                              |
 
 **建議流程**：
+
 1. 開發期間跑 `npm run test -- --watch`。
 2. 提交前執行 `npm run lint && npm run test:run && npm run test:e2e`。
 3. 部署前由 CI 執行 `npm run deploy:check`（含 `test:all` + `build:analyze`）。
@@ -157,22 +165,22 @@ graph TD
 
 ## 8. 運維與自動化腳本
 
-| 腳本 | 檔案 | 作用 |
-| --- | --- | --- |
-| `npm run test:all` | `scripts/run-all-tests.js` | 單元/整合/E2E/覆蓋率/建置一鍵輸出 `test-report.json` 與品質 Gate。|
-| `node scripts/verify-integration.js` | `scripts/verify-integration.js` | 檢查關鍵目錄、檔案、依賴、設定並輸出 `integration-verification.json`。|
-| `npm run build:analyze` | `scripts/optimize-build.js` | 清除 dist、重建、分析 bundle、列出優化建議、輸出 `build-report.json`。|
-| `npm run docker:*` | Dockerfile, docker-compose | 啟動 dev/prod/lb profile，參考 `DEPLOYMENT.md` 取得完整環境設定。|
+| 腳本                                 | 檔案                            | 作用                                                                   |
+| ------------------------------------ | ------------------------------- | ---------------------------------------------------------------------- |
+| `npm run test:all`                   | `scripts/run-all-tests.js`      | 單元/整合/E2E/覆蓋率/建置一鍵輸出 `test-report.json` 與品質 Gate。     |
+| `node scripts/verify-integration.js` | `scripts/verify-integration.js` | 檢查關鍵目錄、檔案、依賴、設定並輸出 `integration-verification.json`。 |
+| `npm run build:analyze`              | `scripts/optimize-build.js`     | 清除 dist、重建、分析 bundle、列出優化建議、輸出 `build-report.json`。 |
+| `npm run docker:*`                   | Dockerfile, docker-compose      | 啟動 dev/prod/lb profile，參考 `DEPLOYMENT.md` 取得完整環境設定。      |
 
 ## 9. 疑難排解備忘
 
-| 症狀 | 可能原因 | 排除建議 |
-| --- | --- | --- |
-| 上傳檔案立刻失敗 | 副檔名、大小、空檔案、編碼問題 | 查看 `FileUploader` 詳細錯誤；必要時調整 `MAX_FILE_SIZE` 或重新匯出 CSV（UTF-8 / Big5）。|
-| 資料解析成功但儀表板無數據 | 檔案不含 M/D 行或全部作廢 | 透過 `FileList` 查看 `invoiceCount`；重新上傳或確認來源。|
-| 匯出 PDF 空白 | 圖表尚未渲染完成或瀏覽器阻擋 | 等待圖表載入、改用 CSV 匯出、允許瀏覽器下載。|
-| E2E 測試 timeout | Dev server 未啟動或 port 被占用 | 先執行 `npm run build && npm run preview -- --port 4173` 或使用 Playwright `--debug` 模式。|
-| Docker 服務無法啟動 | port 衝突 / 記憶體不足 | 參考 `DEPLOYMENT.md` 故障排除章節調整 port 或資源限制。|
+| 症狀                       | 可能原因                        | 排除建議                                                                                    |
+| -------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------- |
+| 上傳檔案立刻失敗           | 副檔名、大小、空檔案、編碼問題  | 查看 `FileUploader` 詳細錯誤；必要時調整 `MAX_FILE_SIZE` 或重新匯出 CSV（UTF-8 / Big5）。   |
+| 資料解析成功但儀表板無數據 | 檔案不含 M/D 行或全部作廢       | 透過 `FileList` 查看 `invoiceCount`；重新上傳或確認來源。                                   |
+| 匯出 PDF 空白              | 圖表尚未渲染完成或瀏覽器阻擋    | 等待圖表載入、改用 CSV 匯出、允許瀏覽器下載。                                               |
+| E2E 測試 timeout           | Dev server 未啟動或 port 被占用 | 先執行 `npm run build && npm run preview -- --port 4173` 或使用 Playwright `--debug` 模式。 |
+| Docker 服務無法啟動        | port 衝突 / 記憶體不足          | 參考 `DEPLOYMENT.md` 故障排除章節調整 port 或資源限制。                                     |
 
 ## 10. 進階參考
 

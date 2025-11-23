@@ -1,12 +1,13 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { 
-  BarChart3, 
-  FileText, 
-  PieChart, 
-  Menu, 
-  X 
+import {
+  BarChart3,
+  FileText,
+  PieChart,
+  DollarSign,
+  Menu,
+  X,
 } from 'lucide-react';
 
 interface LayoutProps {
@@ -14,23 +15,29 @@ interface LayoutProps {
 }
 
 const navigation = [
-  { 
-    name: '儀表板', 
-    href: '/dashboard', 
+  {
+    name: '儀表板',
+    href: '/dashboard',
     icon: BarChart3,
-    description: '查看消費統計概覽'
+    description: '查看消費統計概覽',
   },
-  { 
-    name: '檔案管理', 
-    href: '/files', 
+  {
+    name: '檔案管理',
+    href: '/files',
     icon: FileText,
-    description: '管理發票檔案'
+    description: '管理發票檔案',
   },
-  { 
-    name: '詳細分析', 
-    href: '/analytics', 
+  {
+    name: '詳細分析',
+    href: '/analytics',
     icon: PieChart,
-    description: '深入分析消費數據'
+    description: '深入分析消費數據',
+  },
+  {
+    name: '資產管理',
+    href: '/assets',
+    icon: DollarSign,
+    description: '管理個人的資產項目',
   },
 ];
 
@@ -41,11 +48,16 @@ function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-background">
       {/* Mobile sidebar */}
-      <div className={cn(
-        "fixed inset-0 z-50 lg:hidden",
-        sidebarOpen ? "block" : "hidden"
-      )}>
-        <div className="fixed inset-0 bg-black/20" onClick={() => setSidebarOpen(false)} />
+      <div
+        className={cn(
+          'fixed inset-0 z-50 lg:hidden',
+          sidebarOpen ? 'block' : 'hidden'
+        )}
+      >
+        <div
+          className="fixed inset-0 bg-black/20"
+          onClick={() => setSidebarOpen(false)}
+        />
         <div className="fixed left-0 top-0 h-full w-64 bg-background border-r shadow-lg">
           <div className="flex h-16 items-center justify-between px-4 border-b">
             <h1 className="text-lg font-semibold">發票儀表板</h1>
@@ -57,7 +69,7 @@ function Layout({ children }: LayoutProps) {
             </button>
           </div>
           <nav className="p-4 space-y-2">
-            {navigation.map((item) => {
+            {navigation.map(item => {
               const Icon = item.icon;
               return (
                 <Link
@@ -93,7 +105,7 @@ function Layout({ children }: LayoutProps) {
             <ul role="list" className="flex flex-1 flex-col gap-y-7">
               <li>
                 <ul role="list" className="-mx-2 space-y-1">
-                  {navigation.map((item) => {
+                  {navigation.map(item => {
                     const Icon = item.icon;
                     return (
                       <li key={item.name}>
@@ -109,7 +121,9 @@ function Layout({ children }: LayoutProps) {
                           <Icon className="h-6 w-6 shrink-0" />
                           <div>
                             <div>{item.name}</div>
-                            <div className="text-xs opacity-70 font-normal">{item.description}</div>
+                            <div className="text-xs opacity-70 font-normal">
+                              {item.description}
+                            </div>
                           </div>
                         </Link>
                       </li>
@@ -134,13 +148,12 @@ function Layout({ children }: LayoutProps) {
             <Menu className="h-6 w-6" />
           </button>
           <div className="flex-1 text-sm font-semibold leading-6">
-            {navigation.find(item => item.href === location.pathname)?.name || '發票儀表板'}
+            {navigation.find(item => item.href === location.pathname)?.name ||
+              '發票儀表板'}
           </div>
         </div>
 
-        <main className="min-h-screen">
-          {children}
-        </main>
+        <main className="min-h-screen">{children}</main>
       </div>
     </div>
   );

@@ -1,7 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import FileManager from './pages/FileManager';
 import Analytics from './pages/Analytics';
+import PersonalAssets from './pages/PersonalAssets';
 import Layout from './components/Layout';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { OfflineStatus } from './components/OfflineStatus';
@@ -19,6 +25,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/files" element={<FileManager />} />
               <Route path="/analytics" element={<Analytics />} />
+              <Route path="/assets" element={<PersonalAssets />} />
             </Routes>
           </Layout>
         </Router>

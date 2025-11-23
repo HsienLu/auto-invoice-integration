@@ -56,7 +56,7 @@ export interface FileInfo {
   invoiceCount: number;
   errorMessage?: string;
   originalFileData?: string; // Base64 encoded original file data for reprocessing
-  lastProcessedDate?: Date;  // Track when file was last processed
+  lastProcessedDate?: Date; // Track when file was last processed
 }
 
 // Filter data models
@@ -75,4 +75,23 @@ export interface FilterCriteria {
 export interface FilteredData {
   invoices: Invoice[];
   statistics: Statistics;
+}
+
+// Personal Assets
+export type AssetType =
+  | 'cash'
+  | 'bank'
+  | 'stock'
+  | 'crypto'
+  | 'real_estate'
+  | 'other';
+
+export interface Asset {
+  id: string;
+  name: string;
+  type: AssetType;
+  value: number;
+  currency: string; // e.g., 'TWD', 'USD'
+  acquiredDate?: Date;
+  notes?: string;
 }
